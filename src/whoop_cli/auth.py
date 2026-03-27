@@ -46,7 +46,18 @@ def get_access_token() -> str | None:
     env_token = os.environ.get("WHOOP_ACCESS_TOKEN")
     if env_token:
         return env_token
-    access, _ = load_tokens()
+
+    access, refresh = load_tokens()
+    if not access and not refresh:
+        return None
+
+    # Always try to refresh — access tokens are short-lived
+    if refresh:
+        new_token = refresh_access_token()
+        if new_token:
+            return new_token
+
+    # Fall back to stored access token (might still be valid)
     return access
 
 
@@ -130,11 +141,12 @@ def start_oauth_flow() -> tuple[str, str]:
             "code_verifier": code_verifier,
         },
     )
-    response.raise_for_status()
+    if response.status_code != 200:
+        raise RuntimeError(f"Token exchange failed ({response.status_code}): {response.text}")
     data = response.json()
 
     access_token = data["access_token"]
-    refresh_token = data["refresh_token"]
+    refresh_token = data.get("refresh_token", "")
     save_tokens(access_token, refresh_token)
     return access_token, refresh_token
 
@@ -161,6 +173,9 @@ def refresh_access_token() -> str | None:
     )
 
     if response.status_code != 200:
+        import sys
+
+        print(f"Token refresh failed ({response.status_code}). Run `whoop auth login`.", file=sys.stderr)
         return None
 
     data = response.json()

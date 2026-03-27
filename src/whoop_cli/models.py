@@ -16,7 +16,7 @@ class StrictModel(BaseModel):
 
 
 class Profile(StrictModel):
-    user_id: int
+    user_id: int | str
     email: str
     first_name: str
     last_name: str
@@ -39,8 +39,8 @@ class CycleScore(StrictModel):
 
 
 class Cycle(StrictModel):
-    id: int
-    user_id: int
+    id: int | str
+    user_id: int | str
     start: datetime
     end: datetime | None = None
     score_state: str
@@ -60,9 +60,9 @@ class RecoveryScore(StrictModel):
 
 
 class Recovery(StrictModel):
-    cycle_id: int
-    sleep_id: int
-    user_id: int
+    cycle_id: int | str
+    sleep_id: int | str
+    user_id: int | str
     score_state: str
     score: RecoveryScore | None = None
     created_at: datetime | None = None
@@ -100,8 +100,8 @@ class SleepScore(StrictModel):
 
 
 class Sleep(StrictModel):
-    id: int
-    user_id: int
+    id: int | str
+    user_id: int | str
     start: datetime
     end: datetime | None = None
     nap: bool = False
@@ -134,8 +134,8 @@ class WorkoutScore(StrictModel):
 
 
 class Workout(StrictModel):
-    id: int
-    user_id: int
+    id: int | str
+    user_id: int | str
     start: datetime
     end: datetime | None = None
     sport_id: int

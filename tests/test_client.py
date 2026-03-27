@@ -9,7 +9,7 @@ from whoop_cli.config import API_BASE
 @pytest.mark.asyncio
 async def test_get_profile(sample_profile):
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/user/profile/basic").mock(
+        respx.get(f"{API_BASE}/v2/user/profile/basic").mock(
             return_value=Response(200, json=sample_profile)
         )
         async with WhoopClient("test-token") as client:
@@ -21,7 +21,7 @@ async def test_get_profile(sample_profile):
 @pytest.mark.asyncio
 async def test_get_body_measurement(sample_body):
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/user/measurement/body").mock(
+        respx.get(f"{API_BASE}/v2/user/measurement/body").mock(
             return_value=Response(200, json=sample_body)
         )
         async with WhoopClient("test-token") as client:
@@ -33,7 +33,7 @@ async def test_get_body_measurement(sample_body):
 @pytest.mark.asyncio
 async def test_get_recovery(sample_recovery):
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/recovery").mock(
+        respx.get(f"{API_BASE}/v2/recovery").mock(
             return_value=Response(200, json=sample_recovery)
         )
         async with WhoopClient("test-token") as client:
@@ -46,7 +46,7 @@ async def test_get_recovery(sample_recovery):
 @pytest.mark.asyncio
 async def test_get_sleep(sample_sleep):
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/sleep").mock(
+        respx.get(f"{API_BASE}/v2/activity/sleep").mock(
             return_value=Response(200, json=sample_sleep)
         )
         async with WhoopClient("test-token") as client:
@@ -58,7 +58,7 @@ async def test_get_sleep(sample_sleep):
 @pytest.mark.asyncio
 async def test_get_cycles(sample_cycle):
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/cycle").mock(
+        respx.get(f"{API_BASE}/v2/cycle").mock(
             return_value=Response(200, json=sample_cycle)
         )
         async with WhoopClient("test-token") as client:
@@ -70,7 +70,7 @@ async def test_get_cycles(sample_cycle):
 @pytest.mark.asyncio
 async def test_get_workouts(sample_workout):
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/workout").mock(
+        respx.get(f"{API_BASE}/v2/activity/workout").mock(
             return_value=Response(200, json=sample_workout)
         )
         async with WhoopClient("test-token") as client:
@@ -111,7 +111,7 @@ async def test_pagination():
         return Response(200, json=page1)
 
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/recovery").mock(side_effect=side_effect)
+        respx.get(f"{API_BASE}/v2/recovery").mock(side_effect=side_effect)
         async with WhoopClient("test-token") as client:
             records = await client.get_recovery()
             assert len(records) == 2
@@ -134,7 +134,7 @@ async def test_401_retry(sample_profile, monkeypatch):
     monkeypatch.setattr("whoop_cli.client.refresh_access_token", lambda: "new-token")
 
     with respx.mock:
-        respx.get(f"{API_BASE}/v1/user/profile/basic").mock(side_effect=side_effect)
+        respx.get(f"{API_BASE}/v2/user/profile/basic").mock(side_effect=side_effect)
         async with WhoopClient("old-token") as client:
             profile = await client.get_profile()
             assert profile.email == "test@example.com"

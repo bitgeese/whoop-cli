@@ -48,6 +48,9 @@ class WhoopClient:
                 self._client.headers["Authorization"] = f"Bearer {new_token}"
                 response = await self._client.request(method, path, **kwargs)
 
+        if response.status_code == 401:
+            raise SystemExit("Session expired. Run `whoop auth login` to re-authenticate.")
+
         response.raise_for_status()
         return response
 
@@ -70,11 +73,11 @@ class WhoopClient:
     # --- Typed API methods ---
 
     async def get_profile(self) -> Profile:
-        resp = await self._request("GET", "/v1/user/profile/basic")
+        resp = await self._request("GET", "/v2/user/profile/basic")
         return Profile.model_validate(resp.json())
 
     async def get_body_measurement(self) -> BodyMeasurement:
-        resp = await self._request("GET", "/v1/user/measurement/body")
+        resp = await self._request("GET", "/v2/user/measurement/body")
         return BodyMeasurement.model_validate(resp.json())
 
     async def get_cycles(
@@ -86,7 +89,7 @@ class WhoopClient:
         if end:
             params["end"] = end.isoformat()
         records = []
-        async for record in self._paginate("/v1/cycle", params):
+        async for record in self._paginate("/v2/cycle", params):
             records.append(Cycle.model_validate(record))
         return records
 
@@ -99,7 +102,7 @@ class WhoopClient:
         if end:
             params["end"] = end.isoformat()
         records = []
-        async for record in self._paginate("/v1/recovery", params):
+        async for record in self._paginate("/v2/recovery", params):
             records.append(Recovery.model_validate(record))
         return records
 
@@ -112,7 +115,7 @@ class WhoopClient:
         if end:
             params["end"] = end.isoformat()
         records = []
-        async for record in self._paginate("/v1/sleep", params):
+        async for record in self._paginate("/v2/activity/sleep", params):
             records.append(Sleep.model_validate(record))
         return records
 
@@ -125,7 +128,7 @@ class WhoopClient:
         if end:
             params["end"] = end.isoformat()
         records = []
-        async for record in self._paginate("/v1/workout", params):
+        async for record in self._paginate("/v2/activity/workout", params):
             records.append(Workout.model_validate(record))
         return records
 

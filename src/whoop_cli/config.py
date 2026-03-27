@@ -1,4 +1,10 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Walk up from cwd to find .env
+load_dotenv(Path.cwd() / ".env")
 
 API_BASE = "https://api.prod.whoop.com/developer"
 AUTH_URL = "https://api.prod.whoop.com/oauth/oauth2/auth"
