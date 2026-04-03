@@ -126,7 +126,7 @@ def sample_workout():
                     "distance_meter": 5000.0,
                     "altitude_gain_meter": 50.0,
                     "altitude_change_meter": 10.0,
-                    "zone_duration": {
+                    "zone_durations": {
                         "zone_zero_milli": 60000,
                         "zone_one_milli": 300000,
                         "zone_two_milli": 600000,

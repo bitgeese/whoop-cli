@@ -41,8 +41,11 @@ class CycleScore(StrictModel):
 class Cycle(StrictModel):
     id: int | str
     user_id: int | str
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
     start: datetime
     end: datetime | None = None
+    timezone_offset: str | None = None
     score_state: str
     score: CycleScore | None = None
 
@@ -102,9 +105,13 @@ class SleepScore(StrictModel):
 class Sleep(StrictModel):
     id: int | str
     user_id: int | str
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
     start: datetime
     end: datetime | None = None
+    timezone_offset: str | None = None
     nap: bool = False
+    cycle_id: int | str | None = None
     score_state: str
     score: SleepScore | None = None
 
@@ -130,14 +137,17 @@ class WorkoutScore(StrictModel):
     distance_meter: float | None = None
     altitude_gain_meter: float | None = None
     altitude_change_meter: float | None = None
-    zone_duration: ZoneDuration | None = None
+    zone_durations: ZoneDuration | None = None
 
 
 class Workout(StrictModel):
     id: int | str
     user_id: int | str
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
     start: datetime
     end: datetime | None = None
+    timezone_offset: str | None = None
     sport_id: int
     sport_name: str | None = None
     score_state: str
