@@ -139,6 +139,7 @@ class Workout(StrictModel):
     start: datetime
     end: datetime | None = None
     sport_id: int
+    sport_name: str | None = None
     score_state: str
     score: WorkoutScore | None = None
 
